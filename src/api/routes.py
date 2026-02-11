@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from flask_jwt_extended import create_access_token, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 api = Blueprint('api', __name__)
 
@@ -63,3 +63,12 @@ def login():
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
+
+@api.route("/private", methods=["GET"])
+@jwt_required()
+def private():
+    user_id = get_jwt_identity()
+    user = db.session.get(User, int(user_id))
+    if not user:
+        return jsonify({"error": "User not found"}), 400
+    return jsonify({"logged_in_as": user.serialize()}), 200
