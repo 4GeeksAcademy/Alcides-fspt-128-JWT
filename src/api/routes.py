@@ -59,7 +59,7 @@ def login():
     
     if user.check_password(password):
         access_token = create_access_token(identity=str(user.id))
-        return jsonify({"msg": "Login succesful", "token": access_token, "user": user.serialize()}), 200
+        return jsonify({"msg": "Login succesfully", "token": access_token, "user": user.serialize()}), 200
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
