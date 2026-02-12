@@ -66,7 +66,7 @@ def login():
 
 @api.route("/private", methods=["GET"])
 @jwt_required()
-def private():
+def get_private():
     user_id = get_jwt_identity()
     user = db.session.get(User, int(user_id))
     if not user:

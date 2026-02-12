@@ -1,20 +1,36 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { privateCheck } from "../services/BackendServices";
 
 export const Private = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
 
-    // Si NO hay token -> fuera
-    if (!token) {
-      navigate("/login");
-      return;
+  const [user, setUser] = useState(null)
+  const checkToken = async () => {
+    const response = await privateCheck()
+    if (response){
+      setUser(response)
+      setLoading(false)
     }
-    setLoading(false);
-  }, [navigate]);
+    else {
+      navigate("/")
+    }
+  } 
+
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")){
+      setTimeout(() => {
+
+        navigate("/")
+      }, 1000)
+    } else {
+      checkToken()
+      }
+
+  }, []);
 
   if (loading) {
     return (
